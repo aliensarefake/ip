@@ -40,6 +40,31 @@ public class Duke {
                 System.out.println(" OK, I've marked this task as not done yet:");
                 System.out.println("   " + tasks[taskNum]);
                 System.out.println("____________________________________________________________");
+            } else if (input.startsWith("delete ")) {
+                try {
+                    int taskNum = Integer.parseInt(input.substring(7)) - 1;
+                    if (taskNum < 0 || taskNum >= taskCount) {
+                        throw new DukeException("OOPS!!! Task number is out of range.");
+                    }
+                    Task removedTask = tasks[taskNum];
+                    for (int i = taskNum; i < taskCount - 1; i++) {
+                        tasks[i] = tasks[i + 1];
+                    }
+                    taskCount--;
+                    System.out.println("____________________________________________________________");
+                    System.out.println(" Noted. I've removed this task:");
+                    System.out.println("   " + removedTask);
+                    System.out.println(" Now you have " + taskCount + " tasks in the list.");
+                    System.out.println("____________________________________________________________");
+                } catch (NumberFormatException e) {
+                    System.out.println("____________________________________________________________");
+                    System.out.println(" OOPS!!! Please provide a valid task number.");
+                    System.out.println("____________________________________________________________");
+                } catch (DukeException e) {
+                    System.out.println("____________________________________________________________");
+                    System.out.println(" " + e.getMessage());
+                    System.out.println("____________________________________________________________");
+                }
             } else if (input.startsWith("todo ")) {
                 try {
                     String description = input.substring(5).trim();
