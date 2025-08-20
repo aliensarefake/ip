@@ -41,45 +41,88 @@ public class Duke {
                 System.out.println("   " + tasks[taskNum]);
                 System.out.println("____________________________________________________________");
             } else if (input.startsWith("todo ")) {
-                String description = input.substring(5);
-                tasks[taskCount] = new ToDo(description);
+                try {
+                    String description = input.substring(5).trim();
+                    if (description.isEmpty()) {
+                        throw new DukeException("OOPS!!! The description of a todo cannot be empty.");
+                    }
+                    tasks[taskCount] = new ToDo(description);
+                    System.out.println("____________________________________________________________");
+                    System.out.println(" Got it. I've added this task:");
+                    System.out.println("   " + tasks[taskCount]);
+                    taskCount++;
+                    System.out.println(" Now you have " + taskCount + " tasks in the list.");
+                    System.out.println("____________________________________________________________");
+                } catch (DukeException e) {
+                    System.out.println("____________________________________________________________");
+                    System.out.println(" " + e.getMessage());
+                    System.out.println("____________________________________________________________");
+                }
+            } else if (input.equals("todo")) {
                 System.out.println("____________________________________________________________");
-                System.out.println(" Got it. I've added this task:");
-                System.out.println("   " + tasks[taskCount]);
-                taskCount++;
-                System.out.println(" Now you have " + taskCount + " tasks in the list.");
+                System.out.println(" OOPS!!! The description of a todo cannot be empty.");
                 System.out.println("____________________________________________________________");
             } else if (input.startsWith("deadline ")) {
-                String remaining = input.substring(9);
-                String[] parts = remaining.split(" /by ");
-                String description = parts[0];
-                String by = parts[1];
-                tasks[taskCount] = new Deadline(description, by);
+                try {
+                    String remaining = input.substring(9).trim();
+                    if (remaining.isEmpty()) {
+                        throw new DukeException("OOPS!!! The description of a deadline cannot be empty.");
+                    }
+                    if (!remaining.contains(" /by ")) {
+                        throw new DukeException("OOPS!!! Please specify the deadline using /by format.");
+                    }
+                    String[] parts = remaining.split(" /by ");
+                    String description = parts[0];
+                    String by = parts[1];
+                    tasks[taskCount] = new Deadline(description, by);
+                    System.out.println("____________________________________________________________");
+                    System.out.println(" Got it. I've added this task:");
+                    System.out.println("   " + tasks[taskCount]);
+                    taskCount++;
+                    System.out.println(" Now you have " + taskCount + " tasks in the list.");
+                    System.out.println("____________________________________________________________");
+                } catch (DukeException | ArrayIndexOutOfBoundsException e) {
+                    System.out.println("____________________________________________________________");
+                    System.out.println(" " + (e instanceof DukeException ? e.getMessage() : "OOPS!!! Please specify the deadline using /by format."));
+                    System.out.println("____________________________________________________________");
+                }
+            } else if (input.equals("deadline")) {
                 System.out.println("____________________________________________________________");
-                System.out.println(" Got it. I've added this task:");
-                System.out.println("   " + tasks[taskCount]);
-                taskCount++;
-                System.out.println(" Now you have " + taskCount + " tasks in the list.");
+                System.out.println(" OOPS!!! The description of a deadline cannot be empty.");
                 System.out.println("____________________________________________________________");
             } else if (input.startsWith("event ")) {
-                String remaining = input.substring(6);
-                String[] parts = remaining.split(" /from ");
-                String description = parts[0];
-                String[] timeParts = parts[1].split(" /to ");
-                String from = timeParts[0];
-                String to = timeParts[1];
-                tasks[taskCount] = new Event(description, from, to);
+                try {
+                    String remaining = input.substring(6).trim();
+                    if (remaining.isEmpty()) {
+                        throw new DukeException("OOPS!!! The description of an event cannot be empty.");
+                    }
+                    if (!remaining.contains(" /from ") || !remaining.contains(" /to ")) {
+                        throw new DukeException("OOPS!!! Please specify the event time using /from and /to format.");
+                    }
+                    String[] parts = remaining.split(" /from ");
+                    String description = parts[0];
+                    String[] timeParts = parts[1].split(" /to ");
+                    String from = timeParts[0];
+                    String to = timeParts[1];
+                    tasks[taskCount] = new Event(description, from, to);
+                    System.out.println("____________________________________________________________");
+                    System.out.println(" Got it. I've added this task:");
+                    System.out.println("   " + tasks[taskCount]);
+                    taskCount++;
+                    System.out.println(" Now you have " + taskCount + " tasks in the list.");
+                    System.out.println("____________________________________________________________");
+                } catch (DukeException | ArrayIndexOutOfBoundsException e) {
+                    System.out.println("____________________________________________________________");
+                    System.out.println(" " + (e instanceof DukeException ? e.getMessage() : "OOPS!!! Please specify the event time using /from and /to format."));
+                    System.out.println("____________________________________________________________");
+                }
+            } else if (input.equals("event")) {
                 System.out.println("____________________________________________________________");
-                System.out.println(" Got it. I've added this task:");
-                System.out.println("   " + tasks[taskCount]);
-                taskCount++;
-                System.out.println(" Now you have " + taskCount + " tasks in the list.");
+                System.out.println(" OOPS!!! The description of an event cannot be empty.");
                 System.out.println("____________________________________________________________");
             } else {
-                tasks[taskCount] = new Task(input);
-                taskCount++;
                 System.out.println("____________________________________________________________");
-                System.out.println(" added: " + input);
+                System.out.println(" OOPS!!! I'm sorry, but I don't know what that means :-(");
                 System.out.println("____________________________________________________________");
             }
         }
