@@ -1,17 +1,17 @@
 import java.util.Scanner;
 
-public class Duke {
+public class TaskBot {
     public static void main(String[] args) {
         System.out.println("____________________________________________________________");
         System.out.println(" Hello! I'm TaskBot");
         System.out.println(" What can I do for you?");
         System.out.println("____________________________________________________________");
-        
+
         Scanner scanner = new Scanner(System.in);
         Task[] tasks = new Task[100];
         int taskCount = 0;
         String input;
-        
+
         while (true) {
             input = scanner.nextLine();
             if (input.equals("bye")) {
@@ -44,7 +44,7 @@ public class Duke {
                 try {
                     int taskNum = Integer.parseInt(input.substring(7)) - 1;
                     if (taskNum < 0 || taskNum >= taskCount) {
-                        throw new DukeException("OOPS!!! Task number is out of range.");
+                        throw new TaskBotException("OOPS!!! Task number is out of range.");
                     }
                     Task removedTask = tasks[taskNum];
                     for (int i = taskNum; i < taskCount - 1; i++) {
@@ -60,7 +60,7 @@ public class Duke {
                     System.out.println("____________________________________________________________");
                     System.out.println(" OOPS!!! Please provide a valid task number.");
                     System.out.println("____________________________________________________________");
-                } catch (DukeException e) {
+                } catch (TaskBotException e) {
                     System.out.println("____________________________________________________________");
                     System.out.println(" " + e.getMessage());
                     System.out.println("____________________________________________________________");
@@ -69,7 +69,7 @@ public class Duke {
                 try {
                     String description = input.substring(5).trim();
                     if (description.isEmpty()) {
-                        throw new DukeException("OOPS!!! The description of a todo cannot be empty.");
+                        throw new TaskBotException("OOPS!!! The description of a todo cannot be empty.");
                     }
                     tasks[taskCount] = new ToDo(description);
                     System.out.println("____________________________________________________________");
@@ -78,7 +78,7 @@ public class Duke {
                     taskCount++;
                     System.out.println(" Now you have " + taskCount + " tasks in the list.");
                     System.out.println("____________________________________________________________");
-                } catch (DukeException e) {
+                } catch (TaskBotException e) {
                     System.out.println("____________________________________________________________");
                     System.out.println(" " + e.getMessage());
                     System.out.println("____________________________________________________________");
@@ -91,10 +91,10 @@ public class Duke {
                 try {
                     String remaining = input.substring(9).trim();
                     if (remaining.isEmpty()) {
-                        throw new DukeException("OOPS!!! The description of a deadline cannot be empty.");
+                        throw new TaskBotException("OOPS!!! The description of a deadline cannot be empty.");
                     }
                     if (!remaining.contains(" /by ")) {
-                        throw new DukeException("OOPS!!! Please specify the deadline using /by format.");
+                        throw new TaskBotException("OOPS!!! Please specify the deadline using /by format.");
                     }
                     String[] parts = remaining.split(" /by ");
                     String description = parts[0];
@@ -106,9 +106,9 @@ public class Duke {
                     taskCount++;
                     System.out.println(" Now you have " + taskCount + " tasks in the list.");
                     System.out.println("____________________________________________________________");
-                } catch (DukeException | ArrayIndexOutOfBoundsException e) {
+                } catch (TaskBotException | ArrayIndexOutOfBoundsException e) {
                     System.out.println("____________________________________________________________");
-                    System.out.println(" " + (e instanceof DukeException ? e.getMessage() : "OOPS!!! Please specify the deadline using /by format."));
+                    System.out.println(" " + (e instanceof TaskBotException ? e.getMessage() : "OOPS!!! Please specify the deadline using /by format."));
                     System.out.println("____________________________________________________________");
                 }
             } else if (input.equals("deadline")) {
@@ -119,10 +119,10 @@ public class Duke {
                 try {
                     String remaining = input.substring(6).trim();
                     if (remaining.isEmpty()) {
-                        throw new DukeException("OOPS!!! The description of an event cannot be empty.");
+                        throw new TaskBotException("OOPS!!! The description of an event cannot be empty.");
                     }
                     if (!remaining.contains(" /from ") || !remaining.contains(" /to ")) {
-                        throw new DukeException("OOPS!!! Please specify the event time using /from and /to format.");
+                        throw new TaskBotException("OOPS!!! Please specify the event time using /from and /to format.");
                     }
                     String[] parts = remaining.split(" /from ");
                     String description = parts[0];
@@ -136,9 +136,9 @@ public class Duke {
                     taskCount++;
                     System.out.println(" Now you have " + taskCount + " tasks in the list.");
                     System.out.println("____________________________________________________________");
-                } catch (DukeException | ArrayIndexOutOfBoundsException e) {
+                } catch (TaskBotException | ArrayIndexOutOfBoundsException e) {
                     System.out.println("____________________________________________________________");
-                    System.out.println(" " + (e instanceof DukeException ? e.getMessage() : "OOPS!!! Please specify the event time using /from and /to format."));
+                    System.out.println(" " + (e instanceof TaskBotException ? e.getMessage() : "OOPS!!! Please specify the event time using /from and /to format."));
                     System.out.println("____________________________________________________________");
                 }
             } else if (input.equals("event")) {
@@ -151,7 +151,7 @@ public class Duke {
                 System.out.println("____________________________________________________________");
             }
         }
-        
+
         scanner.close();
     }
 }
