@@ -5,3 +5,4 @@ public class TaskBotException extends Exception {
         super(message);
     }
 }
+
