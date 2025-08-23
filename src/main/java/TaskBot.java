@@ -1,6 +1,90 @@
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class TaskBot {
+    private static final String FILE_PATH = "./data/duke.txt";
+    
+    private static void saveTasks(Task[] tasks, int taskCount) {
+        try {
+            File dataDir = new File("./data");
+            if (!dataDir.exists()) {
+                dataDir.mkdirs();
+            }
+            
+            FileWriter writer = new FileWriter(FILE_PATH);
+            for (int i = 0; i < taskCount; i++) {
+                String line = "";
+                Task task = tasks[i];
+                
+                if (task instanceof ToDo) {
+                    line = "T | ";
+                } else if (task instanceof Deadline) {
+                    line = "D | ";
+                } else if (task instanceof Event) {
+                    line = "E | ";
+                }
+                
+                line += (task.isDone ? "1" : "0") + " | " + task.description;
+                
+                if (task instanceof Deadline) {
+                    line += " | " + ((Deadline) task).by;
+                } else if (task instanceof Event) {
+                    line += " | " + ((Event) task).from + " | " + ((Event) task).to;
+                }
+                
+                writer.write(line + "\n");
+            }
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error saving tasks: " + e.getMessage());
+        }
+    }
+    
+    private static int loadTasks(Task[] tasks) {
+        int taskCount = 0;
+        try {
+            File file = new File(FILE_PATH);
+            if (!file.exists()) {
+                return 0;
+            }
+            
+            Scanner fileScanner = new Scanner(file);
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                String[] parts = line.split(" \\| ");
+                
+                Task task = null;
+                boolean isDone = parts[1].equals("1");
+                String description = parts[2];
+                
+                if (parts[0].equals("T")) {
+                    task = new ToDo(description);
+                } else if (parts[0].equals("D")) {
+                    task = new Deadline(description, parts[3]);
+                } else if (parts[0].equals("E")) {
+                    task = new Event(description, parts[3], parts[4]);
+                }
+                
+                if (task != null) {
+                    if (isDone) {
+                        task.markAsDone();
+                    }
+                    tasks[taskCount++] = task;
+                }
+            }
+            fileScanner.close();
+        } catch (FileNotFoundException e) {
+            return 0;
+        } catch (Exception e) {
+            System.out.println("Error loading tasks. File might be corrupted.");
+            return 0;
+        }
+        return taskCount;
+    }
+    
     public static void main(String[] args) {
         System.out.println("____________________________________________________________");
         System.out.println(" Hello! I'm TaskBot");
@@ -9,7 +93,7 @@ public class TaskBot {
 
         Scanner scanner = new Scanner(System.in);
         Task[] tasks = new Task[100];
-        int taskCount = 0;
+        int taskCount = loadTasks(tasks);
         String input;
 
         while (true) {
@@ -29,6 +113,7 @@ public class TaskBot {
             } else if (input.startsWith("mark ")) {
                 int taskNum = Integer.parseInt(input.substring(5)) - 1;
                 tasks[taskNum].markAsDone();
+                saveTasks(tasks, taskCount);
                 System.out.println("____________________________________________________________");
                 System.out.println(" Nice! I've marked this task as done:");
                 System.out.println("   " + tasks[taskNum]);
@@ -36,6 +121,7 @@ public class TaskBot {
             } else if (input.startsWith("unmark ")) {
                 int taskNum = Integer.parseInt(input.substring(7)) - 1;
                 tasks[taskNum].markAsNotDone();
+                saveTasks(tasks, taskCount);
                 System.out.println("____________________________________________________________");
                 System.out.println(" OK, I've marked this task as not done yet:");
                 System.out.println("   " + tasks[taskNum]);
@@ -51,6 +137,7 @@ public class TaskBot {
                         tasks[i] = tasks[i + 1];
                     }
                     taskCount--;
+                    saveTasks(tasks, taskCount);
                     System.out.println("____________________________________________________________");
                     System.out.println(" Noted. I've removed this task:");
                     System.out.println("   " + removedTask);
@@ -76,6 +163,7 @@ public class TaskBot {
                     System.out.println(" Got it. I've added this task:");
                     System.out.println("   " + tasks[taskCount]);
                     taskCount++;
+                    saveTasks(tasks, taskCount);
                     System.out.println(" Now you have " + taskCount + " tasks in the list.");
                     System.out.println("____________________________________________________________");
                 } catch (TaskBotException e) {
@@ -104,6 +192,7 @@ public class TaskBot {
                     System.out.println(" Got it. I've added this task:");
                     System.out.println("   " + tasks[taskCount]);
                     taskCount++;
+                    saveTasks(tasks, taskCount);
                     System.out.println(" Now you have " + taskCount + " tasks in the list.");
                     System.out.println("____________________________________________________________");
                 } catch (TaskBotException | ArrayIndexOutOfBoundsException e) {
@@ -134,6 +223,7 @@ public class TaskBot {
                     System.out.println(" Got it. I've added this task:");
                     System.out.println("   " + tasks[taskCount]);
                     taskCount++;
+                    saveTasks(tasks, taskCount);
                     System.out.println(" Now you have " + taskCount + " tasks in the list.");
                     System.out.println("____________________________________________________________");
                 } catch (TaskBotException | ArrayIndexOutOfBoundsException e) {
