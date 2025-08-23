@@ -3,8 +3,19 @@ package duke;
 import duke.command.*;
 import duke.task.*;
 
+/**
+ * Parses user input and converts it into executable commands.
+ * Handles various command types including todo, deadline, event, list, mark, unmark, delete, find, and bye.
+ */
 public class Parser {
     
+    /**
+     * Parses a full command string and returns the corresponding Command object.
+     * 
+     * @param fullCommand the complete command string entered by the user
+     * @return the Command object representing the parsed command
+     * @throws TaskBotException if the command is invalid or malformed
+     */
     public static Command parse(String fullCommand) throws TaskBotException {
         String[] parts = fullCommand.split(" ", 2);
         String commandWord = parts[0];
