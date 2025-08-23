@@ -12,13 +12,29 @@ import duke.task.ToDo;
 import duke.task.Deadline;
 import duke.task.Event;
 
+/**
+ * Handles the storage and retrieval of tasks from a file.
+ * Manages loading tasks from disk on startup and saving tasks to disk when modified.
+ */
 public class Storage {
     private String filePath;
     
+    /**
+     * Constructs a Storage object with the specified file path.
+     * 
+     * @param filePath the path to the file where tasks will be stored
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
     
+    /**
+     * Loads tasks from the storage file.
+     * Creates appropriate Task objects based on the stored data format.
+     * 
+     * @return ArrayList of Task objects loaded from the file
+     * @throws TaskBotException if there is an error reading the file or parsing the data
+     */
     public ArrayList<Task> load() throws TaskBotException {
         ArrayList<Task> tasks = new ArrayList<>();
         try {
@@ -60,6 +76,13 @@ public class Storage {
         return tasks;
     }
     
+    /**
+     * Saves the given list of tasks to the storage file.
+     * Creates the necessary directories if they don't exist and writes tasks in the proper format.
+     * 
+     * @param tasks the list of tasks to save to the file
+     * @throws TaskBotException if there is an error writing to the file
+     */
     public void save(ArrayList<Task> tasks) throws TaskBotException {
         try {
             File dataDir = new File(filePath).getParentFile();
