@@ -5,17 +5,32 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+/**
+ * Represents a task with a deadline.
+ */
 public class Deadline extends Task {
     public String by;
     protected LocalDate date;
     protected LocalDateTime dateTime;
 
+    /**
+     * Creates a new deadline task.
+     * 
+     * @param description the task description
+     * @param by the deadline date/time string
+     */
     public Deadline(String description, String by) {
         super(description);
         this.by = by;
         parseDateTime(by);
     }
     
+    /**
+     * Parses the date/time string into LocalDate or LocalDateTime.
+     * Supports formats: yyyy-mm-dd HHmm, yyyy-mm-dd
+     * 
+     * @param dateStr the date/time string to parse
+     */
     private void parseDateTime(String dateStr) {
         // Try parsing as LocalDateTime first (yyyy-mm-dd HHmm format)
         try {

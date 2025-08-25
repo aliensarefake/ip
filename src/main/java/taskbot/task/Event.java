@@ -4,12 +4,22 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+/**
+ * Represents an event task with start and end times.
+ */
 public class Event extends Task {
     public String from;
     public String to;
     protected LocalDateTime fromDateTime;
     protected LocalDateTime toDateTime;
 
+    /**
+     * Creates a new event task.
+     * 
+     * @param description the task description
+     * @param from the start date/time string
+     * @param to the end date/time string
+     */
     public Event(String description, String from, String to) {
         super(description);
         this.from = from;
@@ -18,6 +28,13 @@ public class Event extends Task {
         this.toDateTime = parseDateTime(to);
     }
     
+    /**
+     * Parses the date/time string into LocalDateTime.
+     * Supports formats: yyyy-mm-dd HHmm, ISO format, yyyy-mm-dd
+     * 
+     * @param dateStr the date/time string to parse
+     * @return LocalDateTime or null if parsing fails
+     */
     private LocalDateTime parseDateTime(String dateStr) {
         // Try parsing as yyyy-mm-dd HHmm format
         try {
