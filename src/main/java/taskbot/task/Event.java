@@ -14,15 +14,34 @@ public class Event extends Task {
         super(description);
         this.from = from;
         this.to = to;
+        this.fromDateTime = parseDateTime(from);
+        this.toDateTime = parseDateTime(to);
+    }
+    
+    private LocalDateTime parseDateTime(String dateStr) {
+        // Try parsing as yyyy-mm-dd HHmm format
         try {
-            this.fromDateTime = LocalDateTime.parse(from, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        } catch (DateTimeParseException e) {
-            this.fromDateTime = null;
+            String[] parts = dateStr.split(" ");
+            if (parts.length == 2 && parts[1].length() == 4) {
+                String formattedDateTime = parts[0] + "T" + parts[1].substring(0, 2) + ":" + parts[1].substring(2);
+                return LocalDateTime.parse(formattedDateTime);
+            }
+        } catch (Exception e) {
+            // Continue to next format
         }
+        
+        // Try standard ISO format
         try {
-            this.toDateTime = LocalDateTime.parse(to, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            return LocalDateTime.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         } catch (DateTimeParseException e) {
-            this.toDateTime = null;
+            // Continue to next format
+        }
+        
+        // Try date-only format (assume start of day)
+        try {
+            return LocalDateTime.parse(dateStr + "T00:00:00");
+        } catch (DateTimeParseException e) {
+            return null;
         }
     }
 
@@ -31,10 +50,10 @@ public class Event extends Task {
         String fromStr = from;
         String toStr = to;
         if (fromDateTime != null) {
-            fromStr = fromDateTime.format(DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm"));
+            fromStr = fromDateTime.format(DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma"));
         }
         if (toDateTime != null) {
-            toStr = toDateTime.format(DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm"));
+            toStr = toDateTime.format(DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma"));
         }
         return "[E]" + super.toString() + " (from: " + fromStr + " to: " + toStr + ")";
     }
