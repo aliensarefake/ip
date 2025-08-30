@@ -18,13 +18,39 @@ public class Ui {
     }
     
     /**
+     * Prints multiple lines to the console using varargs.
+     * 
+     * @param lines the lines to print
+     */
+    public void printLines(String... lines) {
+        for (String line : lines) {
+            System.out.println(line);
+        }
+    }
+    
+    /**
+     * Formats and prints messages with proper indentation using varargs.
+     * The first message is printed normally, subsequent messages are indented.
+     * 
+     * @param messages the messages to format and print
+     */
+    public void printFormattedMessage(String... messages) {
+        if (messages.length > 0) {
+            System.out.println(" " + messages[0]);
+            for (int i = 1; i < messages.length; i++) {
+                System.out.println("   " + messages[i]);
+            }
+        }
+    }
+    
+    /**
      * Displays the welcome message when the application starts.
      */
     public void showWelcome() {
-        System.out.println("____________________________________________________________");
-        System.out.println(" Hello! I'm TaskBot");
-        System.out.println(" What can I do for you?");
-        System.out.println("____________________________________________________________");
+        printLines("____________________________________________________________",
+                   " Hello! I'm TaskBot",
+                   " What can I do for you?",
+                   "____________________________________________________________");
     }
     
     /**
@@ -84,8 +110,8 @@ public class Ui {
      * @param task the task that was marked as done
      */
     public void showMarkedDone(Task task) {
-        System.out.println(" Nice! I've marked this task as done:");
-        System.out.println("   " + task);
+        printLines(" Nice! I've marked this task as done:",
+                   "   " + task);
     }
     
     /**
@@ -94,8 +120,8 @@ public class Ui {
      * @param task the task that was marked as not done
      */
     public void showMarkedNotDone(Task task) {
-        System.out.println(" OK, I've marked this task as not done yet:");
-        System.out.println("   " + task);
+        printLines(" OK, I've marked this task as not done yet:",
+                   "   " + task);
     }
     
     /**
@@ -105,9 +131,9 @@ public class Ui {
      * @param taskCount the number of tasks remaining
      */
     public void showTaskRemoved(Task task, int taskCount) {
-        System.out.println(" Noted. I've removed this task:");
-        System.out.println("   " + task);
-        System.out.println(" Now you have " + taskCount + " tasks in the list.");
+        printLines(" Noted. I've removed this task:",
+                   "   " + task,
+                   " Now you have " + taskCount + " tasks in the list.");
     }
     
     /**
@@ -117,9 +143,9 @@ public class Ui {
      * @param taskCount the total number of tasks
      */
     public void showTaskAdded(Task task, int taskCount) {
-        System.out.println(" Got it. I've added this task:");
-        System.out.println("   " + task);
-        System.out.println(" Now you have " + taskCount + " tasks in the list.");
+        printLines(" Got it. I've added this task:",
+                   "   " + task,
+                   " Now you have " + taskCount + " tasks in the list.");
     }
     
     /**

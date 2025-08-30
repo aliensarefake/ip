@@ -36,6 +36,17 @@ public class TaskList {
     }
     
     /**
+     * Adds multiple tasks to the task list using varargs.
+     * 
+     * @param tasksToAdd the tasks to be added
+     */
+    public void addAll(Task... tasksToAdd) {
+        for (Task task : tasksToAdd) {
+            tasks.add(task);
+        }
+    }
+    
+    /**
      * Deletes a task at the specified index.
      * 
      * @param index the index of the task to be deleted
