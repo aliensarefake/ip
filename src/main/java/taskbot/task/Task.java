@@ -4,8 +4,8 @@ package taskbot.task;
  * Represents a task with a description and completion status.
  */
 public class Task {
-    public String description;
-    public boolean isDone;
+    private String description;
+    private boolean isDone;
 
     /**
      * Creates a new task with the given description.
@@ -23,6 +23,14 @@ public class Task {
      */
     public String getStatusIcon() {
         return (isDone ? "X" : " ");
+    }
+    
+    public String getDescription() {
+        return description;
+    }
+    
+    public boolean isDone() {
+        return isDone;
     }
 
     /**

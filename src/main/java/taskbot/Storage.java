@@ -1,6 +1,5 @@
 package taskbot;
 
-import taskbot.task.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.FileNotFoundException;
@@ -55,9 +54,12 @@ public class Storage {
                 if (parts[0].equals("T")) {
                     task = new ToDo(description);
                 } else if (parts[0].equals("D")) {
-                    task = new Deadline(description, parts[3]);
+                    final int deadlineIndex = 3;
+                    task = new Deadline(description, parts[deadlineIndex]);
                 } else if (parts[0].equals("E")) {
-                    task = new Event(description, parts[3], parts[4]);
+                    final int fromIndex = 3;
+                    final int toIndex = 4;
+                    task = new Event(description, parts[fromIndex], parts[toIndex]);
                 }
                 
                 if (task != null) {
@@ -102,12 +104,12 @@ public class Storage {
                     line = "E | ";
                 }
                 
-                line += (task.isDone ? "1" : "0") + " | " + task.description;
+                line += (task.isDone() ? "1" : "0") + " | " + task.getDescription();
                 
                 if (task instanceof Deadline) {
-                    line += " | " + ((Deadline) task).by;
+                    line += " | " + ((Deadline) task).getBy();
                 } else if (task instanceof Event) {
-                    line += " | " + ((Event) task).from + " | " + ((Event) task).to;
+                    line += " | " + ((Event) task).getFrom() + " | " + ((Event) task).getTo();
                 }
                 
                 writer.write(line + "\n");
