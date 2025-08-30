@@ -23,4 +23,15 @@ public class DeleteCommand extends Command {
         storage.save(tasks.getTasks());
         ui.showTaskRemoved(removedTask, tasks.size());
     }
+    
+    @Override
+    public String executeAndGetResponse(TaskList tasks, Storage storage) throws TaskBotException {
+        if (taskNum < 1 || taskNum > tasks.size()) {
+            throw new TaskBotException("OOPS!!! Task number is out of range.");
+        }
+        Task removedTask = tasks.get(taskNum - 1);
+        tasks.delete(taskNum - 1);
+        storage.save(tasks.getTasks());
+        return "Noted. I've removed this task:\n  " + removedTask + "\nNow you have " + tasks.size() + " tasks in the list.";
+    }
 }
