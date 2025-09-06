@@ -26,4 +26,18 @@ public class FindCommand extends Command {
             }
         }
     }
+    
+    @Override
+    public String executeAndGetResponse(TaskList tasks, Storage storage) {
+        ArrayList<Task> matchingTasks = tasks.find(keyword);
+        if (matchingTasks.isEmpty()) {
+            return "No matching tasks found.";
+        } else {
+            StringBuilder result = new StringBuilder("Here are the matching tasks in your list:\n");
+            for (int i = 0; i < matchingTasks.size(); i++) {
+                result.append((i + 1)).append(".").append(matchingTasks.get(i)).append("\n");
+            }
+            return result.toString().trim();
+        }
+    }
 }

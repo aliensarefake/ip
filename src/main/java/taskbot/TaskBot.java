@@ -53,6 +53,22 @@ public class TaskBot {
     }
 
     /**
+     * Generates a response for the user's input.
+     * Parses the input command and executes it, returning the result as a string.
+     * 
+     * @param input the user's input command
+     * @return the response from executing the command
+     */
+    public String getResponse(String input) {
+        try {
+            Command c = Parser.parse(input);
+            return c.executeAndGetResponse(tasks, storage);
+        } catch (TaskBotException e) {
+            return e.getMessage();
+        }
+    }
+    
+    /**
      * Main entry point for the TaskBot application.
      * 
      * @param args command line arguments (not used)

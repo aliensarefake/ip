@@ -3,6 +3,7 @@ plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'checkstyle'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
 }
 
 repositories {
@@ -29,7 +30,7 @@ test {
 }
 
 application {
-    mainClass.set("taskbot.TaskBot")
+    mainClass.set("taskbot.Launcher")
 }
 
 shadowJar {
@@ -44,4 +45,9 @@ run{
 checkstyle {
     toolVersion = '10.12.0'
     configFile = file("${rootDir}/checkstyle.xml")
+}
+
+javafx {
+    version = "17"
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
 }

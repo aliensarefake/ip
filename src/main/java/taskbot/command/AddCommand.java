@@ -19,4 +19,11 @@ public class AddCommand extends Command {
         storage.save(tasks.getTasks());
         ui.showTaskAdded(task, tasks.size());
     }
+    
+    @Override
+    public String executeAndGetResponse(TaskList tasks, Storage storage) throws TaskBotException {
+        tasks.add(task);
+        storage.save(tasks.getTasks());
+        return "Got it. I've added this task:\n  " + task + "\nNow you have " + tasks.size() + " tasks in the list.";
+    }
 }
