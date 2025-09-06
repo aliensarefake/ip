@@ -1,13 +1,25 @@
 package taskbot;
 
-import taskbot.command.*;
-import taskbot.task.*;
+import taskbot.command.AddCommand;
+import taskbot.command.Command;
+import taskbot.command.DeleteCommand;
+import taskbot.command.ExitCommand;
+import taskbot.command.FindCommand;
+import taskbot.command.ListCommand;
+import taskbot.command.MarkCommand;
+import taskbot.command.UnmarkCommand;
+import taskbot.task.Deadline;
+import taskbot.task.Event;
+import taskbot.task.ToDo;
 
 /**
  * Parses user input and converts it into executable commands.
  * Handles various command types including todo, deadline, event, list, mark, unmark, delete, find, and bye.
  */
-public class Parser {
+public final class Parser {
+    
+    private Parser() {
+    }
     
     /**
      * Parses a full command string and returns the corresponding Command object.

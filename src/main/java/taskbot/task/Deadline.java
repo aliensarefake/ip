@@ -9,9 +9,9 @@ import java.time.format.DateTimeParseException;
  * Represents a task with a deadline.
  */
 public class Deadline extends Task {
-    public String by;
-    protected LocalDate date;
-    protected LocalDateTime dateTime;
+    private String by;
+    private LocalDate date;
+    private LocalDateTime dateTime;
 
     /**
      * Creates a new deadline task.
@@ -35,7 +35,8 @@ public class Deadline extends Task {
         // Try parsing as LocalDateTime first (yyyy-mm-dd HHmm format)
         try {
             String[] parts = dateStr.split(" ");
-            if (parts.length == 2 && parts[1].length() == 4) {
+            final int timeLength = 4;
+            if (parts.length == 2 && parts[1].length() == timeLength) {
                 String formattedDateTime = parts[0] + "T" + parts[1].substring(0, 2) + ":" + parts[1].substring(2);
                 this.dateTime = LocalDateTime.parse(formattedDateTime);
                 this.date = null;
@@ -64,5 +65,9 @@ public class Deadline extends Task {
             dateStr = date.format(DateTimeFormatter.ofPattern("MMM dd yyyy"));
         }
         return "[D]" + super.toString() + " (by: " + dateStr + ")";
+    }
+    
+    public String getBy() {
+        return by;
     }
 }

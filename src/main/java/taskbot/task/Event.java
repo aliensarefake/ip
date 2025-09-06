@@ -8,10 +8,10 @@ import java.time.format.DateTimeParseException;
  * Represents an event task with start and end times.
  */
 public class Event extends Task {
-    public String from;
-    public String to;
-    protected LocalDateTime fromDateTime;
-    protected LocalDateTime toDateTime;
+    private String from;
+    private String to;
+    private LocalDateTime fromDateTime;
+    private LocalDateTime toDateTime;
 
     /**
      * Creates a new event task.
@@ -39,7 +39,8 @@ public class Event extends Task {
         // Try parsing as yyyy-mm-dd HHmm format
         try {
             String[] parts = dateStr.split(" ");
-            if (parts.length == 2 && parts[1].length() == 4) {
+            final int timeLength = 4;
+            if (parts.length == 2 && parts[1].length() == timeLength) {
                 String formattedDateTime = parts[0] + "T" + parts[1].substring(0, 2) + ":" + parts[1].substring(2);
                 return LocalDateTime.parse(formattedDateTime);
             }
@@ -73,5 +74,13 @@ public class Event extends Task {
             toStr = toDateTime.format(DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma"));
         }
         return "[E]" + super.toString() + " (from: " + fromStr + " to: " + toStr + ")";
+    }
+    
+    public String getFrom() {
+        return from;
+    }
+    
+    public String getTo() {
+        return to;
     }
 }
