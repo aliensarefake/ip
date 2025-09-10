@@ -9,6 +9,8 @@ import taskbot.Ui;
  * Represents an abstract command that can be executed.
  */
 public abstract class Command {
+    protected static final String ERROR_OUT_OF_RANGE = "OOPS!!! Task number is out of range.";
+    
     /**
      * Executes the command.
      * @param tasks The task list to operate on
@@ -33,5 +35,17 @@ public abstract class Command {
      */
     public boolean isExit() {
         return false;
+    }
+    
+    /**
+     * Validates that a task number is within valid range.
+     * @param taskNum The task number to validate (1-indexed)
+     * @param listSize The size of the task list
+     * @throws TaskBotException If the task number is out of range
+     */
+    protected void validateTaskNumber(int taskNum, int listSize) throws TaskBotException {
+        if (taskNum < 1 || taskNum > listSize) {
+            throw new TaskBotException(ERROR_OUT_OF_RANGE);
+        }
     }
 }

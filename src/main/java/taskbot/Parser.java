@@ -17,6 +17,10 @@ import taskbot.task.ToDo;
  * Handles various command types including todo, deadline, event, list, mark, unmark, delete, find, and bye.
  */
 public final class Parser {
+    private static final String ERROR_EMPTY_TASK_NUMBER = "OOPS!!! Please provide a task number to ";
+    private static final String ERROR_INVALID_NUMBER = "OOPS!!! Please provide a valid task number.";
+    private static final String ERROR_EMPTY_DESCRIPTION = "OOPS!!! The description of a ";
+    private static final String ERROR_UNKNOWN_COMMAND = "OOPS!!! I'm sorry, but I don't know what that means :-(";
     
     private Parser() {
     }
@@ -29,6 +33,7 @@ public final class Parser {
      * @throws TaskBotException if the command is invalid or malformed
      */
     public static Command parse(String fullCommand) throws TaskBotException {
+        assert fullCommand != null && !fullCommand.trim().isEmpty() : "Command cannot be null or empty";
         String[] parts = fullCommand.split(" ", 2);
         String commandWord = parts[0];
         String arguments = parts.length > 1 ? parts[1] : "";
@@ -39,75 +44,84 @@ public final class Parser {
             case "list":
                 return new ListCommand();
             case "mark":
-                if (arguments.isEmpty()) {
-                    throw new TaskBotException("OOPS!!! Please provide a task number to mark.");
-                }
-                try {
-                    int taskNum = Integer.parseInt(arguments);
-                    return new MarkCommand(taskNum);
-                } catch (NumberFormatException e) {
-                    throw new TaskBotException("OOPS!!! Please provide a valid task number.");
-                }
+                return new MarkCommand(parseTaskNumber(arguments, "mark"));
             case "unmark":
-                if (arguments.isEmpty()) {
-                    throw new TaskBotException("OOPS!!! Please provide a task number to unmark.");
-                }
-                try {
-                    int taskNum = Integer.parseInt(arguments);
-                    return new UnmarkCommand(taskNum);
-                } catch (NumberFormatException e) {
-                    throw new TaskBotException("OOPS!!! Please provide a valid task number.");
-                }
+                return new UnmarkCommand(parseTaskNumber(arguments, "unmark"));
             case "delete":
-                if (arguments.isEmpty()) {
-                    throw new TaskBotException("OOPS!!! Please provide a task number to delete.");
-                }
-                try {
-                    int taskNum = Integer.parseInt(arguments);
-                    return new DeleteCommand(taskNum);
-                } catch (NumberFormatException e) {
-                    throw new TaskBotException("OOPS!!! Please provide a valid task number.");
-                }
+                return new DeleteCommand(parseTaskNumber(arguments, "delete"));
             case "todo":
-                if (arguments.trim().isEmpty()) {
-                    throw new TaskBotException("OOPS!!! The description of a todo cannot be empty.");
-                }
+                validateDescription(arguments, "todo");
                 return new AddCommand(new ToDo(arguments.trim()));
             case "deadline":
-                if (arguments.trim().isEmpty()) {
-                    throw new TaskBotException("OOPS!!! The description of a deadline cannot be empty.");
-                }
-                if (!arguments.contains(" /by ")) {
-                    throw new TaskBotException("OOPS!!! Please specify the deadline using /by format.");
-                }
-                String[] deadlineParts = arguments.split(" /by ");
-                if (deadlineParts.length != 2) {
-                    throw new TaskBotException("OOPS!!! Please specify the deadline using /by format.");
-                }
-                return new AddCommand(new Deadline(deadlineParts[0], deadlineParts[1]));
+                return parseDeadlineCommand(arguments);
             case "event":
-                if (arguments.trim().isEmpty()) {
-                    throw new TaskBotException("OOPS!!! The description of an event cannot be empty.");
-                }
-                if (!arguments.contains(" /from ") || !arguments.contains(" /to ")) {
-                    throw new TaskBotException("OOPS!!! Please specify the event time using /from and /to format.");
-                }
-                String[] eventParts = arguments.split(" /from ");
-                if (eventParts.length != 2) {
-                    throw new TaskBotException("OOPS!!! Please specify the event time using /from and /to format.");
-                }
-                String[] timeParts = eventParts[1].split(" /to ");
-                if (timeParts.length != 2) {
-                    throw new TaskBotException("OOPS!!! Please specify the event time using /from and /to format.");
-                }
-                return new AddCommand(new Event(eventParts[0], timeParts[0], timeParts[1]));
+                return parseEventCommand(arguments);
             case "find":
                 if (arguments.trim().isEmpty()) {
                     throw new TaskBotException("OOPS!!! Please provide a keyword to search.");
                 }
                 return new FindCommand(arguments.trim());
             default:
-                throw new TaskBotException("OOPS!!! I'm sorry, but I don't know what that means :-(");
+                throw new TaskBotException(ERROR_UNKNOWN_COMMAND);
         }
+    }
+    
+    private static int parseTaskNumber(String arguments, String action) throws TaskBotException {
+        if (arguments.isEmpty()) {
+            throw new TaskBotException(ERROR_EMPTY_TASK_NUMBER + action + ".");
+        }
+        try {
+            int taskNum = Integer.parseInt(arguments);
+            assert taskNum > 0 : "Task number must be positive";
+            return taskNum;
+        } catch (NumberFormatException e) {
+            throw new TaskBotException(ERROR_INVALID_NUMBER);
+        }
+    }
+    
+    private static void validateDescription(String arguments, String taskType) throws TaskBotException {
+        if (arguments.trim().isEmpty()) {
+            throw new TaskBotException(ERROR_EMPTY_DESCRIPTION + taskType + " cannot be empty.");
+        }
+    }
+    
+    private static Command parseDeadlineCommand(String arguments) throws TaskBotException {
+        validateDescription(arguments, "deadline");
+        
+        final String byDelimiter = " /by ";
+        if (!arguments.contains(byDelimiter)) {
+            throw new TaskBotException("OOPS!!! Please specify the deadline using /by format.");
+        }
+        
+        String[] parts = arguments.split(byDelimiter);
+        if (parts.length != 2) {
+            throw new TaskBotException("OOPS!!! Please specify the deadline using /by format.");
+        }
+        
+        return new AddCommand(new Deadline(parts[0], parts[1]));
+    }
+    
+    private static Command parseEventCommand(String arguments) throws TaskBotException {
+        validateDescription(arguments, "event");
+        
+        final String fromDelimiter = " /from ";
+        final String toDelimiter = " /to ";
+        final String errorMessage = "OOPS!!! Please specify the event time using /from and /to format.";
+        
+        if (!arguments.contains(fromDelimiter) || !arguments.contains(toDelimiter)) {
+            throw new TaskBotException(errorMessage);
+        }
+        
+        String[] eventParts = arguments.split(fromDelimiter);
+        if (eventParts.length != 2) {
+            throw new TaskBotException(errorMessage);
+        }
+        
+        String[] timeParts = eventParts[1].split(toDelimiter);
+        if (timeParts.length != 2) {
+            throw new TaskBotException(errorMessage);
+        }
+        
+        return new AddCommand(new Event(eventParts[0], timeParts[0], timeParts[1]));
     }
 }
