@@ -31,6 +31,7 @@ public class Storage {
      * @param filePath the path to the file where tasks will be stored
      */
     public Storage(String filePath) {
+        assert filePath != null && !filePath.trim().isEmpty() : "File path cannot be null or empty";
         this.filePath = filePath;
     }
     
@@ -53,6 +54,7 @@ public class Storage {
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
                 String[] parts = line.split(TASK_DELIMITER);
+                assert parts.length >= 3 : "Invalid task format in file: " + line;
                 
                 Task task = null;
                 boolean isDone = parts[1].equals(DONE_MARKER);
@@ -102,6 +104,7 @@ public class Storage {
      * @throws TaskBotException if there is an error writing to the file
      */
     public void save(ArrayList<Task> tasks) throws TaskBotException {
+        assert tasks != null : "Tasks list cannot be null";
         try {
             File dataDir = new File(filePath).getParentFile();
             if (dataDir != null && !dataDir.exists()) {
@@ -110,6 +113,7 @@ public class Storage {
             
             FileWriter writer = new FileWriter(filePath);
             for (Task task : tasks) {
+                assert task != null : "Task in list cannot be null";
                 writer.write(formatTaskForStorage(task) + "\n");
             }
             writer.close();

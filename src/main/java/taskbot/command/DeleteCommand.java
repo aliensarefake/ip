@@ -10,11 +10,15 @@ public class DeleteCommand extends Command {
     private final int taskNum;
     
     public DeleteCommand(int taskNum) {
+        assert taskNum > 0 : "Task number must be positive";
         this.taskNum = taskNum;
     }
     
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws TaskBotException {
+        assert tasks != null : "TaskList cannot be null";
+        assert ui != null : "Ui cannot be null";
+        assert storage != null : "Storage cannot be null";
         validateTaskNumber(taskNum, tasks.size());
         Task removedTask = tasks.get(taskNum - 1);
         tasks.delete(taskNum - 1);
@@ -24,6 +28,8 @@ public class DeleteCommand extends Command {
     
     @Override
     public String executeAndGetResponse(TaskList tasks, Storage storage) throws TaskBotException {
+        assert tasks != null : "TaskList cannot be null";
+        assert storage != null : "Storage cannot be null";
         validateTaskNumber(taskNum, tasks.size());
         Task removedTask = tasks.get(taskNum - 1);
         tasks.delete(taskNum - 1);
