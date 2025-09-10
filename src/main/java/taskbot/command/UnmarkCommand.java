@@ -7,7 +7,7 @@ import taskbot.Ui;
 import taskbot.task.Task;
 
 public class UnmarkCommand extends Command {
-    private int taskNum;
+    private final int taskNum;
     
     public UnmarkCommand(int taskNum) {
         this.taskNum = taskNum;
@@ -15,9 +15,7 @@ public class UnmarkCommand extends Command {
     
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws TaskBotException {
-        if (taskNum < 1 || taskNum > tasks.size()) {
-            throw new TaskBotException("OOPS!!! Task number is out of range.");
-        }
+        validateTaskNumber(taskNum, tasks.size());
         Task task = tasks.get(taskNum - 1);
         task.markAsNotDone();
         storage.save(tasks.getTasks());
@@ -26,9 +24,7 @@ public class UnmarkCommand extends Command {
     
     @Override
     public String executeAndGetResponse(TaskList tasks, Storage storage) throws TaskBotException {
-        if (taskNum < 1 || taskNum > tasks.size()) {
-            throw new TaskBotException("OOPS!!! Task number is out of range.");
-        }
+        validateTaskNumber(taskNum, tasks.size());
         Task task = tasks.get(taskNum - 1);
         task.markAsNotDone();
         storage.save(tasks.getTasks());
