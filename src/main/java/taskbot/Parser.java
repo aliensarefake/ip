@@ -29,6 +29,7 @@ public final class Parser {
      * @throws TaskBotException if the command is invalid or malformed
      */
     public static Command parse(String fullCommand) throws TaskBotException {
+        assert fullCommand != null && !fullCommand.trim().isEmpty() : "Command cannot be null or empty";
         String[] parts = fullCommand.split(" ", 2);
         String commandWord = parts[0];
         String arguments = parts.length > 1 ? parts[1] : "";
@@ -44,6 +45,7 @@ public final class Parser {
                 }
                 try {
                     int taskNum = Integer.parseInt(arguments);
+                    assert taskNum > 0 : "Task number must be positive";
                     return new MarkCommand(taskNum);
                 } catch (NumberFormatException e) {
                     throw new TaskBotException("OOPS!!! Please provide a valid task number.");
@@ -54,6 +56,7 @@ public final class Parser {
                 }
                 try {
                     int taskNum = Integer.parseInt(arguments);
+                    assert taskNum > 0 : "Task number must be positive";
                     return new UnmarkCommand(taskNum);
                 } catch (NumberFormatException e) {
                     throw new TaskBotException("OOPS!!! Please provide a valid task number.");

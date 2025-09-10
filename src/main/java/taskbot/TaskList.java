@@ -32,6 +32,7 @@ public class TaskList {
      * @param task the task to be added
      */
     public void add(Task task) {
+        assert task != null : "Task cannot be null";
         tasks.add(task);
     }
     
@@ -41,7 +42,9 @@ public class TaskList {
      * @param tasksToAdd the tasks to be added
      */
     public void addAll(Task... tasksToAdd) {
+        assert tasksToAdd != null : "Tasks array cannot be null";
         for (Task task : tasksToAdd) {
+            assert task != null : "Individual task cannot be null";
             tasks.add(task);
         }
     }
@@ -52,6 +55,7 @@ public class TaskList {
      * @param index the index of the task to be deleted
      */
     public void delete(int index) {
+        assert index >= 0 && index < tasks.size() : "Index out of bounds: " + index;
         tasks.remove(index);
     }
     
@@ -62,6 +66,7 @@ public class TaskList {
      * @return the task at the specified index
      */
     public Task get(int index) {
+        assert index >= 0 && index < tasks.size() : "Index out of bounds: " + index;
         return tasks.get(index);
     }
     
@@ -91,6 +96,7 @@ public class TaskList {
      * @return ArrayList of tasks matching the keyword
      */
     public ArrayList<Task> find(String keyword) {
+        assert keyword != null && !keyword.trim().isEmpty() : "Keyword cannot be null or empty";
         ArrayList<Task> matchingTasks = new ArrayList<>();
         for (Task task : tasks) {
             if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
