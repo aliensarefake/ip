@@ -2,6 +2,8 @@ package taskbot;
 
 import taskbot.task.Task;
 import java.util.Scanner;
+import java.util.Arrays;
+import java.util.stream.IntStream;
 
 /**
  * Handles all user interface operations for the TaskBot application.
@@ -23,9 +25,8 @@ public class Ui {
      * @param lines the lines to print
      */
     public void printLines(String... lines) {
-        for (String line : lines) {
-            System.out.println(line);
-        }
+        Arrays.stream(lines)
+            .forEach(System.out::println);
     }
     
     /**
@@ -37,9 +38,8 @@ public class Ui {
     public void printFormattedMessage(String... messages) {
         if (messages.length > 0) {
             System.out.println(" " + messages[0]);
-            for (int i = 1; i < messages.length; i++) {
-                System.out.println("   " + messages[i]);
-            }
+            Arrays.stream(messages, 1, messages.length)
+                .forEach(msg -> System.out.println("   " + msg));
         }
     }
     
@@ -99,9 +99,8 @@ public class Ui {
      */
     public void showTaskList(TaskList tasks) {
         System.out.println(" Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println(" " + (i + 1) + "." + tasks.get(i));
-        }
+        IntStream.range(0, tasks.size())
+            .forEach(i -> System.out.println(" " + (i + 1) + "." + tasks.get(i)));
     }
     
     /**

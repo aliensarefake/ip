@@ -2,6 +2,8 @@ package taskbot;
 
 import taskbot.task.Task;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Manages a list of tasks and provides operations to manipulate them.
@@ -43,10 +45,9 @@ public class TaskList {
      */
     public void addAll(Task... tasksToAdd) {
         assert tasksToAdd != null : "Tasks array cannot be null";
-        for (Task task : tasksToAdd) {
-            assert task != null : "Individual task cannot be null";
-            tasks.add(task);
-        }
+        Arrays.stream(tasksToAdd)
+            .peek(task -> { assert task != null : "Individual task cannot be null"; })
+            .forEach(tasks::add);
     }
     
     /**
@@ -97,12 +98,9 @@ public class TaskList {
      */
     public ArrayList<Task> find(String keyword) {
         assert keyword != null && !keyword.trim().isEmpty() : "Keyword cannot be null or empty";
-        ArrayList<Task> matchingTasks = new ArrayList<>();
-        for (Task task : tasks) {
-            if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
-                matchingTasks.add(task);
-            }
-        }
-        return matchingTasks;
+        String lowerKeyword = keyword.toLowerCase();
+        return tasks.stream()
+            .filter(task -> task.getDescription().toLowerCase().contains(lowerKeyword))
+            .collect(Collectors.toCollection(ArrayList::new));
     }
 }

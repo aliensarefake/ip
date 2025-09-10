@@ -3,6 +3,8 @@ package taskbot.command;
 import taskbot.Storage;
 import taskbot.TaskList;
 import taskbot.Ui;
+import java.util.stream.IntStream;
+import java.util.stream.Collectors;
 
 public class ListCommand extends Command {
     @Override
@@ -15,10 +17,10 @@ public class ListCommand extends Command {
         if (tasks.size() == 0) {
             return "No tasks in your list yet.";
         }
-        StringBuilder result = new StringBuilder("Here are the tasks in your list:\n");
-        for (int i = 0; i < tasks.size(); i++) {
-            result.append((i + 1)).append(".").append(tasks.get(i)).append("\n");
-        }
-        return result.toString().trim();
+        String header = "Here are the tasks in your list:\n";
+        String taskList = IntStream.range(0, tasks.size())
+            .mapToObj(i -> (i + 1) + "." + tasks.get(i))
+            .collect(Collectors.joining("\n"));
+        return header + taskList;
     }
 }
