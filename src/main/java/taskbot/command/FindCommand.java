@@ -5,9 +5,10 @@ import taskbot.TaskList;
 import taskbot.Ui;
 import taskbot.task.Task;
 import java.util.ArrayList;
+import java.util.stream.IntStream;
 
 public class FindCommand extends Command {
-    private String keyword;
+    private final String keyword;
     
     public FindCommand(String keyword) {
         this.keyword = keyword;
@@ -21,9 +22,8 @@ public class FindCommand extends Command {
             System.out.println(" No matching tasks found.");
         } else {
             System.out.println(" Here are the matching tasks in your list:");
-            for (int i = 0; i < matchingTasks.size(); i++) {
-                System.out.println(" " + (i + 1) + "." + matchingTasks.get(i));
-            }
+            IntStream.range(0, matchingTasks.size())
+                .forEach(i -> System.out.println(" " + (i + 1) + "." + matchingTasks.get(i)));
         }
     }
     
@@ -33,11 +33,11 @@ public class FindCommand extends Command {
         if (matchingTasks.isEmpty()) {
             return "No matching tasks found.";
         } else {
-            StringBuilder result = new StringBuilder("Here are the matching tasks in your list:\n");
-            for (int i = 0; i < matchingTasks.size(); i++) {
-                result.append((i + 1)).append(".").append(matchingTasks.get(i)).append("\n");
-            }
-            return result.toString().trim();
+            String header = "Here are the matching tasks in your list:\n";
+            String taskList = IntStream.range(0, matchingTasks.size())
+                .mapToObj(i -> (i + 1) + "." + matchingTasks.get(i))
+                .collect(java.util.stream.Collectors.joining("\n"));
+            return header + taskList;
         }
     }
 }

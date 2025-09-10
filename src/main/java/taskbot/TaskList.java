@@ -2,6 +2,8 @@ package taskbot;
 
 import taskbot.task.Task;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Manages a list of tasks and provides operations to manipulate them.
@@ -41,9 +43,8 @@ public class TaskList {
      * @param tasksToAdd the tasks to be added
      */
     public void addAll(Task... tasksToAdd) {
-        for (Task task : tasksToAdd) {
-            tasks.add(task);
-        }
+        Arrays.stream(tasksToAdd)
+            .forEach(tasks::add);
     }
     
     /**
@@ -91,12 +92,9 @@ public class TaskList {
      * @return ArrayList of tasks matching the keyword
      */
     public ArrayList<Task> find(String keyword) {
-        ArrayList<Task> matchingTasks = new ArrayList<>();
-        for (Task task : tasks) {
-            if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
-                matchingTasks.add(task);
-            }
-        }
-        return matchingTasks;
+        String lowerKeyword = keyword.toLowerCase();
+        return tasks.stream()
+            .filter(task -> task.getDescription().toLowerCase().contains(lowerKeyword))
+            .collect(Collectors.toCollection(ArrayList::new));
     }
 }
