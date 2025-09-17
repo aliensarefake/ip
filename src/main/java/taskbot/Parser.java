@@ -7,6 +7,7 @@ import taskbot.command.ExitCommand;
 import taskbot.command.FindCommand;
 import taskbot.command.ListCommand;
 import taskbot.command.MarkCommand;
+import taskbot.command.SortCommand;
 import taskbot.command.UnmarkCommand;
 import taskbot.task.Deadline;
 import taskbot.task.Event;
@@ -62,6 +63,8 @@ public final class Parser {
                     throw new TaskBotException("OOPS!!! Please provide a keyword to search.");
                 }
                 return new FindCommand(arguments.trim());
+            case "sort":
+                return parseSortCommand(arguments);
             default:
                 String suggestion = getSuggestion(commandWord);
                 if (!suggestion.isEmpty()) {
@@ -165,5 +168,36 @@ public final class Parser {
         }
 
         return "";
+    }
+
+    private static Command parseSortCommand(String arguments) throws TaskBotException {
+        String criteria = arguments.trim().toLowerCase();
+
+        if (criteria.isEmpty()) {
+            criteria = "description";
+        }
+
+        SortCommand.SortCriteria sortCriteria;
+        switch (criteria) {
+            case "description":
+            case "desc":
+                sortCriteria = SortCommand.SortCriteria.DESCRIPTION;
+                break;
+            case "status":
+            case "done":
+                sortCriteria = SortCommand.SortCriteria.STATUS;
+                break;
+            case "type":
+                sortCriteria = SortCommand.SortCriteria.TYPE;
+                break;
+            case "date":
+            case "time":
+                sortCriteria = SortCommand.SortCriteria.DATE;
+                break;
+            default:
+                throw new TaskBotException("OOPS!!! Invalid sort criteria. Use: description, status, type, or date.");
+        }
+
+        return new SortCommand(sortCriteria);
     }
 }
