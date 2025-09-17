@@ -21,7 +21,8 @@ public final class Parser {
     private static final String ERROR_INVALID_NUMBER = "OOPS!!! Please provide a valid task number.";
     private static final String ERROR_EMPTY_DESCRIPTION = "OOPS!!! The description of a ";
     private static final String ERROR_UNKNOWN_COMMAND = "OOPS!!! I'm sorry, but I don't know what that means :-(";
-    
+    private static final String ERROR_COMMON_TYPOS = "\nDid you mean: ";
+
     private Parser() {
     }
     
@@ -62,6 +63,10 @@ public final class Parser {
                 }
                 return new FindCommand(arguments.trim());
             default:
+                String suggestion = getSuggestion(commandWord);
+                if (!suggestion.isEmpty()) {
+                    throw new TaskBotException(ERROR_UNKNOWN_COMMAND + ERROR_COMMON_TYPOS + suggestion);
+                }
                 throw new TaskBotException(ERROR_UNKNOWN_COMMAND);
         }
     }
@@ -123,5 +128,42 @@ public final class Parser {
         }
         
         return new AddCommand(new Event(eventParts[0], timeParts[0], timeParts[1]));
+    }
+
+    private static String getSuggestion(String command) {
+        String lowerCommand = command.toLowerCase();
+
+        if (lowerCommand.equals("exit") || lowerCommand.equals("quit") || lowerCommand.equals("close")) {
+            return "bye";
+        }
+        if (lowerCommand.equals("ls") || lowerCommand.equals("show") || lowerCommand.equals("all")) {
+            return "list";
+        }
+        if (lowerCommand.equals("add") || lowerCommand.equals("task")) {
+            return "todo, deadline, or event";
+        }
+        if (lowerCommand.equals("done") || lowerCommand.equals("complete") || lowerCommand.equals("check")) {
+            return "mark";
+        }
+        if (lowerCommand.equals("undone") || lowerCommand.equals("uncheck")) {
+            return "unmark";
+        }
+        if (lowerCommand.equals("remove") || lowerCommand.equals("del") || lowerCommand.equals("rm")) {
+            return "delete";
+        }
+        if (lowerCommand.equals("search") || lowerCommand.equals("grep")) {
+            return "find";
+        }
+        if (lowerCommand.startsWith("tod") || lowerCommand.startsWith("to-do")) {
+            return "todo";
+        }
+        if (lowerCommand.startsWith("dead") || lowerCommand.equals("dl")) {
+            return "deadline";
+        }
+        if (lowerCommand.equals("evt") || lowerCommand.startsWith("even")) {
+            return "event";
+        }
+
+        return "";
     }
 }

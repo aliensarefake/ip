@@ -19,7 +19,7 @@ import java.util.Collections;
  * This control represents a dialog box consisting of an ImageView to represent the speaker's face and a label
  * containing text from the speaker.
  */
-public class DialogBox extends HBox {
+public final class DialogBox extends HBox {
 
     public enum DialogType {
         USER,
@@ -61,22 +61,25 @@ public class DialogBox extends HBox {
     }
     
     private void applyStyles() {
+        final int userImageSize = 50;
+        final int botImageSize = 40;
+
         switch (type) {
             case USER:
                 dialog.setStyle("-fx-background-color: #E3F2FD; "
                     + "-fx-background-radius: 15; "
                     + "-fx-padding: 10; "
                     + "-fx-font-size: 14px;");
-                displayPicture.setFitHeight(50);
-                displayPicture.setFitWidth(50);
+                displayPicture.setFitHeight(userImageSize);
+                displayPicture.setFitWidth(userImageSize);
                 break;
             case TASKBOT:
                 dialog.setStyle("-fx-background-color: #F5F5F5; "
                     + "-fx-background-radius: 15; "
                     + "-fx-padding: 10; "
                     + "-fx-font-size: 14px;");
-                displayPicture.setFitHeight(40);
-                displayPicture.setFitWidth(40);
+                displayPicture.setFitHeight(botImageSize);
+                displayPicture.setFitWidth(botImageSize);
                 break;
             case ERROR:
                 dialog.setStyle("-fx-background-color: #FFEBEE; "
@@ -85,8 +88,10 @@ public class DialogBox extends HBox {
                     + "-fx-font-size: 14px; "
                     + "-fx-text-fill: #C62828; "
                     + "-fx-font-weight: bold;");
-                displayPicture.setFitHeight(40);
-                displayPicture.setFitWidth(40);
+                displayPicture.setFitHeight(botImageSize);
+                displayPicture.setFitWidth(botImageSize);
+                break;
+            default:
                 break;
         }
 

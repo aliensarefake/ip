@@ -47,6 +47,10 @@ public class Storage {
         try {
             File file = new File(filePath);
             if (!file.exists()) {
+                File dataDir = file.getParentFile();
+                if (dataDir != null && !dataDir.exists()) {
+                    dataDir.mkdirs();
+                }
                 return tasks;
             }
             
@@ -54,7 +58,8 @@ public class Storage {
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
                 String[] parts = line.split(TASK_DELIMITER);
-                assert parts.length >= 3 : "Invalid task format in file: " + line;
+                final int minParts = 3;
+                assert parts.length >= minParts : "Invalid task format in file: " + line;
                 
                 Task task = null;
                 boolean isDone = parts[1].equals(DONE_MARKER);
@@ -71,9 +76,15 @@ public class Storage {
             }
             fileScanner.close();
         } catch (FileNotFoundException e) {
-            throw new TaskBotException("File not found: " + filePath);
+            File dataDir = new File(filePath).getParentFile();
+            if (dataDir != null && !dataDir.exists()) {
+                dataDir.mkdirs();
+            }
+            return tasks;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new TaskBotException("Data file is corrupted. Some tasks may not load correctly.");
         } catch (Exception e) {
-            throw new TaskBotException("Error loading tasks. File might be corrupted.");
+            throw new TaskBotException("Error loading tasks: " + e.getMessage());
         }
         return tasks;
     }
@@ -134,9 +145,9 @@ public class Storage {
         }
         
         sb.append(TASK_DELIMITER)
-          .append(task.isDone() ? DONE_MARKER : NOT_DONE_MARKER)
-          .append(TASK_DELIMITER)
-          .append(task.getDescription());
+                .append(task.isDone() ? DONE_MARKER : NOT_DONE_MARKER)
+                .append(TASK_DELIMITER)
+                .append(task.getDescription());
         
         if (task instanceof Deadline) {
             Deadline deadline = (Deadline) task;
