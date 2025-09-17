@@ -30,8 +30,14 @@ public class MainWindow extends AnchorPane {
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
         dialogContainer.getChildren().add(
-            DialogBox.getTaskBotDialog("Hello! I'm TaskBot\nWhat can I do for you?", taskBotImage)
+            DialogBox.getTaskBotDialog("Hello! I'm TaskBot\n\nWhat can I do for you today?", taskBotImage)
         );
+
+        scrollPane.setStyle("-fx-background: #FAFAFA; -fx-background-color: #FAFAFA;");
+        dialogContainer.setStyle("-fx-background-color: #FAFAFA;");
+        userInput.setStyle("-fx-font-size: 14px; -fx-background-radius: 20; -fx-border-radius: 20;");
+        sendButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; "
+            + "-fx-background-radius: 20; -fx-font-weight: bold; -fx-cursor: hand;");
     }
     
     public void setTaskBot(TaskBot t) {
@@ -39,19 +45,28 @@ public class MainWindow extends AnchorPane {
     }
     
     /**
-     * Creates two dialog boxes, one echoing user input and the other containing TaskBot's reply and then appends them to
-     * the dialog container. Clears the user input after processing.
+     * Creates two dialog boxes, one echoing user input and the other containing TaskBot's
+     * reply and then appends them to the dialog container. Clears the user input after processing.
      */
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
         String response = taskBot.getResponse(input);
-        dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, userImage),
+
+        dialogContainer.getChildren().add(DialogBox.getUserDialog(input, userImage));
+
+        if (taskBot.isErrorResponse(response)) {
+            dialogContainer.getChildren().add(
+                DialogBox.getErrorDialog(response, taskBotImage)
+            );
+        } else {
+            dialogContainer.getChildren().add(
                 DialogBox.getTaskBotDialog(response, taskBotImage)
-        );
+            );
+        }
+
         userInput.clear();
-        
+
         if (input.trim().equals("bye")) {
             javafx.application.Platform.exit();
         }

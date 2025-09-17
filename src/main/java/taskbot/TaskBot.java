@@ -55,7 +55,7 @@ public class TaskBot {
     /**
      * Generates a response for the user's input.
      * Parses the input command and executes it, returning the result as a string.
-     * 
+     *
      * @param input the user's input command
      * @return the response from executing the command
      */
@@ -66,6 +66,16 @@ public class TaskBot {
         } catch (TaskBotException e) {
             return e.getMessage();
         }
+    }
+
+    /**
+     * Checks if a response is an error message.
+     *
+     * @param response the response to check
+     * @return true if the response is an error, false otherwise
+     */
+    public boolean isErrorResponse(String response) {
+        return response.startsWith("☹ OOPS!!!") || response.contains("OOPS");
     }
     
     /**
