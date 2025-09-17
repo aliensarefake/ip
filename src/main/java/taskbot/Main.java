@@ -23,6 +23,8 @@ public class Main extends Application {
             Scene scene = new Scene(ap);
             stage.setScene(scene);
             stage.setTitle("TaskBot");
+            stage.setMinHeight(400);
+            stage.setMinWidth(350);
             fxmlLoader.<MainWindow>getController().setTaskBot(taskBot);
             stage.show();
         } catch (IOException e) {

@@ -20,12 +20,21 @@ import java.util.Collections;
  * containing text from the speaker.
  */
 public class DialogBox extends HBox {
+
+    public enum DialogType {
+        USER,
+        TASKBOT,
+        ERROR
+    }
     @FXML
     private Label dialog;
     @FXML
     private ImageView displayPicture;
-    
-    private DialogBox(String text, Image img) {
+
+    private DialogType type;
+
+    private DialogBox(String text, Image img, DialogType type) {
+        this.type = type;
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(MainWindow.class.getResource("/view/DialogBox.fxml"));
             fxmlLoader.setController(this);
@@ -37,6 +46,8 @@ public class DialogBox extends HBox {
         
         dialog.setText(text);
         displayPicture.setImage(img);
+
+        applyStyles();
     }
     
     /**
@@ -49,12 +60,58 @@ public class DialogBox extends HBox {
         setAlignment(Pos.TOP_LEFT);
     }
     
+    private void applyStyles() {
+        switch (type) {
+            case USER:
+                dialog.setStyle("-fx-background-color: #E3F2FD; "
+                    + "-fx-background-radius: 15; "
+                    + "-fx-padding: 10; "
+                    + "-fx-font-size: 14px;");
+                displayPicture.setFitHeight(50);
+                displayPicture.setFitWidth(50);
+                break;
+            case TASKBOT:
+                dialog.setStyle("-fx-background-color: #F5F5F5; "
+                    + "-fx-background-radius: 15; "
+                    + "-fx-padding: 10; "
+                    + "-fx-font-size: 14px;");
+                displayPicture.setFitHeight(40);
+                displayPicture.setFitWidth(40);
+                break;
+            case ERROR:
+                dialog.setStyle("-fx-background-color: #FFEBEE; "
+                    + "-fx-background-radius: 15; "
+                    + "-fx-padding: 10; "
+                    + "-fx-font-size: 14px; "
+                    + "-fx-text-fill: #C62828; "
+                    + "-fx-font-weight: bold;");
+                displayPicture.setFitHeight(40);
+                displayPicture.setFitWidth(40);
+                break;
+        }
+
+        displayPicture.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);");
+
+        javafx.scene.shape.Circle clip = new javafx.scene.shape.Circle(
+            displayPicture.getFitWidth() / 2,
+            displayPicture.getFitHeight() / 2,
+            Math.min(displayPicture.getFitWidth(), displayPicture.getFitHeight()) / 2
+        );
+        displayPicture.setClip(clip);
+    }
+
     public static DialogBox getUserDialog(String text, Image img) {
-        return new DialogBox(text, img);
+        return new DialogBox(text, img, DialogType.USER);
     }
     
     public static DialogBox getTaskBotDialog(String text, Image img) {
-        var db = new DialogBox(text, img);
+        var db = new DialogBox(text, img, DialogType.TASKBOT);
+        db.flip();
+        return db;
+    }
+
+    public static DialogBox getErrorDialog(String text, Image img) {
+        var db = new DialogBox(text, img, DialogType.ERROR);
         db.flip();
         return db;
     }
