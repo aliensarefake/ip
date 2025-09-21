@@ -1,17 +1,28 @@
 plugins {
+    id 'checkstyle'
     id 'java'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id 'checkstyle'
-    id 'org.openjfx.javafxplugin' version '0.0.13'
 }
 
 repositories {
     mavenCentral()
 }
 
+jar {
+    manifest {
+        attributes('Main-Class': 'taskbot.Launcher')
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from {
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
 dependencies {
-    String javaFxVersion = '17'
+    String javaFxVersion = '17.0.7'
 
     implementation group: 'org.openjfx', name: 'javafx-base', version: javaFxVersion, classifier: 'win'
     implementation group: 'org.openjfx', name: 'javafx-base', version: javaFxVersion, classifier: 'mac'
@@ -25,8 +36,6 @@ dependencies {
     implementation group: 'org.openjfx', name: 'javafx-graphics', version: javaFxVersion, classifier: 'win'
     implementation group: 'org.openjfx', name: 'javafx-graphics', version: javaFxVersion, classifier: 'mac'
     implementation group: 'org.openjfx', name: 'javafx-graphics', version: javaFxVersion, classifier: 'linux'
-
-    implementation 'org.testfx:openjfx-monocle:17.0.10'
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.0'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.0'
@@ -53,8 +62,6 @@ application {
 shadowJar {
     archiveBaseName = "taskbot"
     archiveClassifier = null
-    configurations = [project.configurations.runtimeClasspath]
-    mergeServiceFiles()
 }
 
 run{
@@ -64,9 +71,4 @@ run{
 checkstyle {
     toolVersion = '10.12.0'
     configFile = file("${rootDir}/checkstyle.xml")
-}
-
-javafx {
-    version = "17"
-    modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
