@@ -10,8 +10,8 @@ public final class Launcher {
     }
     public static void main(String[] args) {
         System.setProperty("prism.order", "sw");
-        System.setProperty("prism.text", "t2k");
-        System.setProperty("javafx.animation.pulse", "60");
+        System.setProperty("java.awt.headless", "false");
+
         Application.launch(Main.class, args);
     }
 }
